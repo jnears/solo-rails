@@ -3,13 +3,20 @@ require 'cgi'
 require 'open-uri'
 require 'chronic'
 require 'nokogiri'
+require 'solo-rails/helpers' if defined?(Rails)
 require 'solo-rails/railtie' if defined?(Rails)
+
+
 
 module SoloRails
 
-  def initialize
-    @site = options[:base_uri]
-  end
+  class Catalogue
+
+    def initialize
+      @site = "http://library.iser.essex.ac.uk/Library/WebServices/SoutronApi.svc/"
+    end
+
+  
 
   # returns SoloHash of values for individual catalogue record
   def show(id)
@@ -17,7 +24,7 @@ module SoloRails
     response = SoloHash.new
     url = "#{@site}getcatalogue?id=#{id}"
     begin
-      soutron_data = Nokogiri::XML(open(url))
+      soutron_data = Nokogiri::XML(open(url, :read_timeout => 180))
       response[:id] = soutron_data.xpath("/soutron/catalogs_view/ct/cat").attribute("id").text
       # response[:request_url] = url - removed for security/speed purposes - PG 2011-02-17
       response[:content_type] = soutron_data.xpath("/soutron/catalogs_view/ct").attribute("name").text
@@ -50,7 +57,7 @@ module SoloRails
   def search(*args)
     build_query_url(args.pop)
     begin
-      parse_results(Nokogiri::XML(open(url)))
+      parse_results(Nokogiri::XML(open(url, :read_timeout => 180)))
     rescue Exception => e  
       Rails.logger.info("SOLO Error in URL: " + url)
     end
@@ -209,6 +216,8 @@ module SoloRails
       word.downcase!
       word
     end
+
+end
 
 end
 

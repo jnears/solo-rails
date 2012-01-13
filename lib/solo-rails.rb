@@ -3,7 +3,7 @@ require 'cgi'
 require 'open-uri'
 require 'chronic'
 require 'nokogiri'
-require 'solo-rails/helpers' if defined?(Rails)
+require 'solo-rails/helpers'
 require 'solo-rails/railtie' if defined?(Rails)
 
 

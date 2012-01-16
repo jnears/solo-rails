@@ -23,6 +23,7 @@ class SoloRails
       response[:id] = soutron_data.xpath("/soutron/catalogs_view/ct/cat").attribute("id").text
       # response[:request_url] = url - removed for security/speed purposes - PG 2011-02-17
       response[:content_type] = soutron_data.xpath("/soutron/catalogs_view/ct").attribute("name").text
+      response[:content_type_display] = soutron_data.xpath("/soutron/catalogs_view/ct").attribute("caption").text
       response[:record_type] = soutron_data.xpath("/soutron/catalogs_view/ct/cat/rt").attribute("name").text
       soutron_data.xpath("/soutron/catalogs_view/ct/cat/fs/f").each do |f|
         if f.xpath("count(./vs/v)") > 0
@@ -104,6 +105,7 @@ class SoloRails
 
       content_type = SoloHash.new
       content_type.merge!( { "content_type".to_sym => ct.attribute("name").text } )
+      content_type.merge!( { "content_type_display".to_sym => ct.attribute("caption").text } )
       content_type.merge!( { "size".to_sym => ct.attribute("count").text } )
 
       @records = []

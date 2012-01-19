@@ -171,7 +171,7 @@ class SoloRails
     def self.iser_solo_parse_options(options)
       q = options[:q] 
       unless options[:ignore_is_website_feature] == true
-        q.nil? ? nil : q << ";Is ISER Staff Publication:Y" 
+        q.nil? ? nil : q << ";Is ISER Staff Publication:Y|Is Website Feature:Y" 
       end
       ctrt = options[:ctrt]
       select = options[:select]

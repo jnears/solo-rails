@@ -3,6 +3,7 @@ require 'cgi'
 require 'open-uri'
 require 'chronic'
 require 'nokogiri'
+require 'rinku'
 
 class SoloRails
 
@@ -74,8 +75,6 @@ class SoloRails
     query_string << "material=#{material}" if material.present?
 
     url += query_string.join("&")
-
-    p "Fetching SOLO data from: #{url}"
 
     begin
       soutron_data = Nokogiri::XML(open(url, :read_timeout => 180))
@@ -220,12 +219,12 @@ class SoloRails
         when 2 then element.text.to_i
         when 3 then Date.parse(element.text.to_s)
         # when 3 then element.text.to_s
-        when 7 then element.text.to_s
-          # if element.attribute("desc").value.size > 0 && !element.attribute("desc").value.eql?(element.text.to_s)
-          #             "#{element.attribute("desc")} - #{ActionController::Base.helpers.auto_link(element.text.to_s)}"
-          #           else
-          #             ActionController::Base.helpers.auto_link(element.text.to_s)
-          #           end
+        when 7 then
+          if element.attribute("desc").value.size > 0 && !element.attribute("desc").value.eql?(element.text.to_s)
+            "#{element.attribute("desc")} - #{Rinku.auto_link(element.text.to_s)}"
+          else
+            Rinku.auto_link(element.text.to_s)
+          end
         when 8 then parse_complex_date(element)
         else field_type
       end
@@ -253,6 +252,9 @@ class SoloRails
     # converts strings like "Publication Date" into "publication_date"
     def self.uscore(str)
       str.gsub(/\s*/,"").underscore
+    end
+
+    def auto_link
     end
 
 end

@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Solo::Rails::VERSION
   s.authors     = ["Paul Groves"]
   s.email       = ["github@modagoo.co.uk"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/paulgroves/solo-rails"
   s.summary     = "Ruby wrapper for Soutron Solo API"
   s.description = "Provides methods to query Soutron Solo catalog from Ruby"
 
@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_runtime_dependency "nokogiri"
   s.add_runtime_dependency "chronic"
+  s.add_runtime_dependency "rinku"
 end

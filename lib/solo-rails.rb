@@ -36,10 +36,10 @@ class SoloRails
       if soutron_data.xpath("count(/soutron/catalogs_view/ct/cat/related_catalogs)") > 0
         @related_records = []
         soutron_data.xpath("/soutron/catalogs_view/ct/cat/related_catalogs/ct").each do |related_ct|
-            related_record = SoloHash.new
             rrct = related_ct.attribute("name").text
             related_ct.xpath('ctlgs/cat').each do |r|
-              related_record.merge!( { "content_type".to_sym => rrct, "cid".to_sym => r.attribute("id").text } )
+              related_record = SoloHash.new 
+              related_record.merge!({ "content_type".to_sym => rrct, "cid".to_sym => r.attribute("id").text })
               @related_records << related_record
             end
         end

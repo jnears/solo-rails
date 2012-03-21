@@ -37,17 +37,17 @@ class SoloRails
         @related_records = []
         soutron_data.xpath("/soutron/catalogs_view/ct/cat/related_catalogs/ct").each do |related_ct|
             related_record = SoloHash.new
-            related_record.merge!( { "content_type".to_sym => related_ct.attribute("name").text } )
+            rrct = related_ct.attribute("name").text
             related_ct.xpath('ctlgs/cat').each do |r|
-              related_record.merge!( {"cid".to_sym => r.attribute("id").text } )
+              related_record.merge!( { "content_type".to_sym => rrct, "cid".to_sym => r.attribute("id").text } )
+              @related_records << related_record
             end
-            @related_records << related_record
         end
         response[:related_records] = @related_records
       end
 
     rescue
-      response = "Record #{id} not found"
+      raise "Record #{id} not found"
     end
     return response
   end
@@ -171,7 +171,8 @@ class SoloRails
     def self.iser_solo_parse_options(options)
       q = options[:q] 
       unless options[:ignore_is_website_feature] == true
-        q.nil? ? nil : q << ";Is ISER Staff Publication:Y|Is Website Feature:Y" 
+        # q.nil? ? nil : q << ";Is ISER Staff Publication:Y|Is Website Feature:Y" 
+        q.nil? ? nil : q << ";Is Website Feature:Y" 
       end
       ctrt = options[:ctrt]
       select = options[:select]

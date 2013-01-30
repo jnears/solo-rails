@@ -232,20 +232,33 @@ class SoloRails
     end
 
     # attempts to make ruby Date or failsover to string from SOLO complex date field - PG 2011-04-08
+    # always returns a string now to attempt manage partial dates better - PG 2013-01-30
     def self.parse_complex_date(element)
       d = element.text.split("-")
-      date = []
-      date << "%02d" % d[2] unless d[2].nil?
-      date << "%02d" % d[1] unless d[1].nil?
-      date << d[0] unless d[0].nil?
+      # date = []
+      # date << "%02d" % d[2] unless d[2].nil?
+      # date << "%02d" % d[1] unless d[1].nil?
+      # date << d[0] unless d[0].nil?
+
+      year = "%02d" % d[0] unless d[0].nil?
+      month = "%02d" % d[1] unless d[1].nil?
+      day = d[2] unless d[2].nil?
+
       circa = "circa " if element.attribute("circa").to_s == "1"
       nodate = "forthcoming " if element.attribute("nodate").to_s == "1"
-      ongoing = "ongoing" if element.attribute("ongoing").to_s == "1" 
-      begin
-        ret = Date.parse("#{date[0]}-#{date[1]}-#{date[2]}")
-      rescue
-        ret = "#{circa}#{nodate}#{date.join("-")} #{ongoing}".capitalize
-      end
+      ongoing = " ongoing" if element.attribute("ongoing").to_s == "1" 
+      # begin
+        # ret = Date.parse("#{date[0]}-#{date[1]}-#{date[2]}")
+        if year.present? && month.present? && day.present?
+          date = Chronic.parse("#{year}-#{month}-#{day}").strftime('%d %B %Y')
+        elsif year.present? && month.present? && day.nil?
+          date = Chronic.parse("#{year}-#{month}-15").strftime('%B %Y')
+        elsif year.present? && month.nil? && day.nil?
+          date = Chronic.parse("#{year}-06-01").strftime('%Y')
+        end
+      # rescue
+        ret = "#{circa}#{nodate}#{date}#{ongoing}".capitalize
+      # end
       ret
     end
 

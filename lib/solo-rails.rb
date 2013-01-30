@@ -250,9 +250,9 @@ class SoloRails
       # begin
         # ret = Date.parse("#{date[0]}-#{date[1]}-#{date[2]}")
         if year.present? && month.present? && day.present?
-          date = Chronic.parse("#{year}-#{month}-#{day}").strftime('%d %B %Y')
+          date = Chronic.parse("#{year}-#{month.capitalize}-#{day}").strftime('%d %B %Y')
         elsif year.present? && month.present? && day.nil?
-          date = Chronic.parse("#{year}-#{month}-15").strftime('%B %Y')
+          date = Chronic.parse("#{year}-#{month.capitalize}-15").strftime('%B %Y')
         elsif year.present? && month.nil? && day.nil?
           date = Chronic.parse("#{year}-06-01").strftime('%Y')
         end

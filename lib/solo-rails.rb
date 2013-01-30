@@ -257,7 +257,7 @@ class SoloRails
           date = Chronic.parse("#{year}-06-01").strftime('%Y')
         end
       # rescue
-        ret = "#{circa}#{nodate}#{date}#{ongoing}".capitalize
+        ret = "#{circa}#{nodate}#{date}#{ongoing}"
       # end
       ret
     end

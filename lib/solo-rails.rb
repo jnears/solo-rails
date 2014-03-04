@@ -215,7 +215,7 @@ class SoloRails
     # }
     def self.parse_value(field_type, element)
       field_type = field_type.to_i
-      case field_type+
+      case field_type
         when 1, 4, 5, 6, 11, 12 then element.text.to_s
         when 2 then element.text.to_i
         when 3 then Date.parse(element.text.to_s)
@@ -228,7 +228,7 @@ class SoloRails
           end
         when 8 then parse_complex_date(element)
         # else field_type
-        else element.text
+        else element.text.to_s
       end
     end
 

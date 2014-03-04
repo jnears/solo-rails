@@ -38,7 +38,7 @@ class SoloRails
         soutron_data.xpath("/soutron/catalogs_view/ct/cat/related_catalogs/ct").each do |related_ct|
             rrct = related_ct.attribute("name").text
             related_ct.xpath('ctlgs/cat').each do |r|
-              related_record = SoloHash.new 
+              related_record = SoloHash.new
               related_record.merge!({ "content_type".to_sym => rrct, "cid".to_sym => r.attribute("id").text })
               @related_records << related_record
             end
@@ -78,7 +78,7 @@ class SoloRails
 
     begin
       soutron_data = Nokogiri::XML(open(url, :read_timeout => 180))
-    rescue Exception => e  
+    rescue Exception => e
       # Rails.logger.info("SOLO Error in URL: " + url)
     end
 
@@ -135,10 +135,10 @@ class SoloRails
 
   def self.published_years(record_type, limit=nil, q=nil)
     q.nil? ? q = "Is Website Feature:Y" : q << ";Is Website Feature:Y"
-    newest_record = IserSolo.new.search   :q => q, 
-                                          :per_page => 1, 
-                                          :sort => "Publication Date:d", 
-                                          :select => "Publication Date", 
+    newest_record = IserSolo.new.search   :q => q,
+                                          :per_page => 1,
+                                          :sort => "Publication Date:d",
+                                          :select => "Publication Date",
                                           :ctrt => ":#{record_type}"
     d = newest_record.content_types.first.records.first.publication_date
     if (d.to_s =~ /(20|19)\d{2}/) != 0
@@ -147,10 +147,10 @@ class SoloRails
       newest_year = Chronic.parse("01 Jan #{d}").year
     end
 
-    oldest_record = IserSolo.new.search   :q => q, 
-                                          :per_page => 1, 
-                                          :sort => "Publication Date:a", 
-                                          :select => "Publication Date", 
+    oldest_record = IserSolo.new.search   :q => q,
+                                          :per_page => 1,
+                                          :sort => "Publication Date:a",
+                                          :select => "Publication Date",
                                           :ctrt => ":#{record_type}"
     d = oldest_record.content_types.first.records.first.publication_date
     if (d.to_s =~ /(20|19)\d{2}/) != 0
@@ -169,10 +169,10 @@ class SoloRails
 
     # returns array of URL safe variables from options
     def self.iser_solo_parse_options(options)
-      q = options[:q] 
+      q = options[:q]
       unless options[:ignore_is_website_feature] == true
-        # q.nil? ? nil : q << ";Is ISER Staff Publication:Y|Is Website Feature:Y" 
-        q.nil? ? nil : q << ";Is Website Feature:Y" 
+        # q.nil? ? nil : q << ";Is ISER Staff Publication:Y|Is Website Feature:Y"
+        q.nil? ? nil : q << ";Is Website Feature:Y"
       end
       ctrt = options[:ctrt]
       select = options[:select]
@@ -215,7 +215,7 @@ class SoloRails
     # }
     def self.parse_value(field_type, element)
       field_type = field_type.to_i
-      case field_type
+      case field_type+
         when 1, 4, 5, 6, 11, 12 then element.text.to_s
         when 2 then element.text.to_i
         when 3 then Date.parse(element.text.to_s)
@@ -227,7 +227,8 @@ class SoloRails
             Rinku.auto_link(element.text.to_s)
           end
         when 8 then parse_complex_date(element)
-        else field_type
+        # else field_type
+        else element.text
       end
     end
 
@@ -246,7 +247,7 @@ class SoloRails
 
       circa = "circa " if element.attribute("circa").to_s == "1"
       nodate = "forthcoming " if element.attribute("nodate").to_s == "1"
-      ongoing = " ongoing" if element.attribute("ongoing").to_s == "1" 
+      ongoing = " ongoing" if element.attribute("ongoing").to_s == "1"
       # begin
         # ret = Date.parse("#{date[0]}-#{date[1]}-#{date[2]}")
         if year.present? && month.present? && day.present?
@@ -274,10 +275,10 @@ class SoloRails
 end
 
 # Allows object.fieldname searches, returning nil rather than exception if key does not exist - PG 2011-01-20
-class SoloHash < Hash  
-  def method_missing(method, *params)  
-    method = method.to_sym  
-    return self[method] if self.keys.collect(&:to_sym).include?(method)   
+class SoloHash < Hash
+  def method_missing(method, *params)
+    method = method.to_sym
+    return self[method] if self.keys.collect(&:to_sym).include?(method)
     nil
-  end  
+  end
 end

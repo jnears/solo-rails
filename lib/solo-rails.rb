@@ -254,10 +254,10 @@ class SoloRails
         # ret = Date.parse("#{date[0]}-#{date[1]}-#{date[2]}")
         if year.present? && month.present? && day.present?
           date = Date.parse("#{year}-#{month.capitalize}-#{day}")
-          display_date = date.strftime("%d %B %Y")
+          display_date = date.strftime("%d %b %Y")
         elsif year.present? && month.present? && day.nil?
           date = Date.parse("#{year}-#{month.capitalize}-15")
-          display_date = date.strftime("%B %Y")
+          display_date = date.strftime("%b %Y")
         elsif year.present? && month.nil? && day.nil?
           date = Date.parse("#{year}-06-01")
           display_date = date.strftime("%Y")
